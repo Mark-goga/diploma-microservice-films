@@ -1,4 +1,10 @@
-import { IsDateString, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateFilmDto {
   @IsString()
@@ -16,11 +22,20 @@ export class CreateFilmDto {
   @IsDateString()
   releaseDate: string;
 
-  @IsString()
+  @IsString({ each: true })
+  @IsArray()
   @IsNotEmpty()
-  genre: string;
+  genre: string[];
 
   @IsString()
   @IsNotEmpty()
   backGroundImageKey: string;
+
+  @IsString()
+  @IsNotEmpty()
+  avatarImageKey: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  estimation: number;
 }

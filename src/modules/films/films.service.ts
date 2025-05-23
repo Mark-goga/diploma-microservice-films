@@ -9,8 +9,7 @@ import { FILTER_CONFIG_FOR_FILM } from '@modules/films/constants/films-filter.co
 
 @Injectable()
 export class FilmsService {
-  constructor(private readonly filmsRepository: FilmsRepository) {
-  }
+  constructor(private readonly filmsRepository: FilmsRepository) {}
 
   async create(createFilmDto: CreateFilmDto) {
     return this.filmsRepository.create(createFilmDto);

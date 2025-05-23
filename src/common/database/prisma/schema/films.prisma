@@ -5,7 +5,7 @@ model Films {
   director           String
   releaseDate        DateTime @map("release_date")
   genre              String[]
-  estimation         Int
+  estimation         Float
   backGroundImageKey String   @map("back_ground_image_key")
   avatarImageKey     String   @map("avatar_image_key")
   createdAt          DateTime @default(now()) @map("created_at")

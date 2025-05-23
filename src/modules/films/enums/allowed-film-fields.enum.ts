@@ -6,6 +6,7 @@ export enum AllowedFilmSortingFields {
   GENRE = 'genre',
   CREATED_AT = 'createdAt',
   UPDATED_AT = 'updatedAt',
+  ESTIMATION = 'estimation',
 }
 
 export enum AllowedFilmFilterFields {
@@ -13,4 +14,5 @@ export enum AllowedFilmFilterFields {
   TITLE = 'title',
   DIRECTOR = 'director',
   GENRE = 'genre',
+  ESTIMATION = 'estimation',
 }
