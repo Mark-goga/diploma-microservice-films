@@ -11,6 +11,7 @@ import {
 import { Logger } from 'nestjs-pino';
 import { FILM_PACKAGE_NAME } from '@proto/films/films';
 import { CONFIG } from '@common/constants';
+import { REVIEW_PACKAGE_NAME } from '@proto/review/review';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -18,8 +19,11 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        protoPath: [join(__dirname, `${PROTO_PATH}/films/films.proto`)],
-        package: [FILM_PACKAGE_NAME],
+        protoPath: [
+          join(__dirname, `${PROTO_PATH}/films/films.proto`),
+          join(__dirname, `${PROTO_PATH}/review/review.proto`),
+        ],
+        package: [FILM_PACKAGE_NAME, REVIEW_PACKAGE_NAME],
         loader: {
           includeDirs: [join(__dirname, PROTO_PATH)],
         },

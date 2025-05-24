@@ -24,7 +24,7 @@
     "db:seed": "prisma db seed",
     "db:migrate": "npx prisma migrate dev",
     "db:migrate:deploy": "npx prisma migrate deploy",
-    "generate:from:proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --proto_path=./src/lib/common/src/proto --ts_proto_out=./src/lib/common/src/proto --ts_proto_opt=nestJs=true films/films.proto common/common.proto"
+    "generate:from:proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --proto_path=./src/lib/common/src/proto --ts_proto_out=./src/lib/common/src/proto --ts_proto_opt=nestJs=true films/films.proto common/common.proto review/review.proto"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.3",

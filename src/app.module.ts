@@ -3,6 +3,7 @@ import { PrismaModule } from '@database/prisma/prisma.module';
 import { LoggerModule } from 'nestjs-pino';
 import { CONFIG } from '@common/constants';
 import { FilmsModule } from '@modules/films/films.module';
+import { ReviewModule } from '@modules/review/review.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { FilmsModule } from '@modules/films/films.module';
       },
     }),
     FilmsModule,
+    ReviewModule,
   ],
   controllers: [],
   providers: [],
