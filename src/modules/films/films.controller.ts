@@ -9,6 +9,7 @@ import { AuthGuard } from '@lib/src/guards';
 import { TokenType } from '@proto/auth/auth';
 import { RolesGuard } from '@lib/src/guards/roles.guard';
 import { FilmServiceControllerMethods } from '@proto/films/films';
+import { FindOneDocumentDto } from '@proto/common/common';
 
 @Controller()
 @FilmServiceControllerMethods()
@@ -26,10 +27,13 @@ export class FilmsController {
     return this.filmsService.findAll(getFilmsDto);
   }
 
-  findOne(@Payload() id: string) {
-    return this.filmsService.findOne(id);
+  findOne(@Payload() findOneDto: FindOneDocumentDto) {
+    return this.filmsService.findOne(findOneDto.id);
   }
 
+  @Roles(RoleName.ADMIN)
+  @TokenTypeDecorator(TokenType.REFRESH)
+  @UseGuards(AuthGuard, RolesGuard)
   update(@Payload() updateFilmDto: UpdateFilmDto) {
     return this.filmsService.update(updateFilmDto);
   }
@@ -37,7 +41,7 @@ export class FilmsController {
   @Roles(RoleName.ADMIN)
   @TokenTypeDecorator(TokenType.REFRESH)
   @UseGuards(AuthGuard, RolesGuard)
-  remove(@Payload() id: string) {
-    return this.filmsService.remove(id);
+  remove(@Payload() findOneDto: FindOneDocumentDto) {
+    return this.filmsService.remove(findOneDto.id);
   }
 }

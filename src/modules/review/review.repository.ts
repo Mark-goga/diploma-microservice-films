@@ -61,4 +61,13 @@ export class ReviewRepository {
       where: { id },
     });
   }
+
+  async findByUserId(userId: string) {
+    return this.prismaService.reviews.findMany({
+      where: { userId },
+      include: {
+        film: true,
+      },
+    });
+  }
 }

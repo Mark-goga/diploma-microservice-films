@@ -47,7 +47,11 @@ export class FilmsService {
   }
 
   async findOne(id: string) {
-    return await this.filmsRepository.findByIdOrThrow(id);
+    const { reviews, ...film } = await this.filmsRepository.findByIdOrThrow(id);
+    return {
+      film,
+      reviews,
+    };
   }
 
   async update(updateFilmDto: UpdateFilmDto) {

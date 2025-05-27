@@ -66,4 +66,11 @@ export class ReviewService {
   async remove(id: string) {
     return this.reviewRepository.remove(id);
   }
+
+  async findByUserId(userId: string) {
+    const reviewsWithFilms = await this.reviewRepository.findByUserId(userId);
+    return {
+      reviews: reviewsWithFilms,
+    };
+  }
 }

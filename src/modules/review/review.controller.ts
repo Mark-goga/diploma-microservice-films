@@ -46,4 +46,8 @@ export class ReviewController {
   removeReview(@Payload() findOneUserDto: FindOneDocumentValidator) {
     return this.reviewService.remove(findOneUserDto.id);
   }
+
+  findReviewsByUser(@Payload() findOneDto: FindOneDocumentValidator) {
+    return this.reviewService.findByUserId(findOneDto.id);
+  }
 }
