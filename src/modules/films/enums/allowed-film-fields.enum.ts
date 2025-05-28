@@ -15,4 +15,5 @@ export enum AllowedFilmFilterFields {
   DIRECTOR = 'director',
   GENRE = 'genre',
   ESTIMATION = 'estimation',
+  REVIEWS = 'reviews',
 }

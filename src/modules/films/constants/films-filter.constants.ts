@@ -14,10 +14,18 @@ export const FILTER_CONFIG_FOR_FILM = {
     }),
   },
   [AllowedFilmFilterFields.DIRECTOR]: {
-    transform: (value: string) => ({
-      contains: value,
-      mode: 'insensitive',
-    }),
+    transform: (value: string) => {
+      if (value.includes(',')) {
+        const directors = value.split(',').map((d) => d.trim());
+        return {
+          in: directors,
+        };
+      }
+      return {
+        contains: value,
+        mode: 'insensitive',
+      };
+    },
   },
   [AllowedFilmFilterFields.GENRE]: {
     transform: (value: string) => {
@@ -26,7 +34,19 @@ export const FILTER_CONFIG_FOR_FILM = {
   },
   [AllowedFilmFilterFields.ESTIMATION]: {
     transform: (value: string) => {
-      return FilterUtil.getConfigForNumber(value);
+      return FilterUtil.getConfigForNumber(value, 'gte');
+    },
+  },
+  [AllowedFilmFilterFields.REVIEWS]: {
+    transform: (value: string) => {
+      if (value) {
+        return {
+          none: {
+            userId: value,
+          },
+        };
+      }
+      return {};
     },
   },
 };

@@ -50,4 +50,8 @@ export class ReviewController {
   findReviewsByUser(@Payload() findOneDto: FindOneDocumentValidator) {
     return this.reviewService.findByUserId(findOneDto.id);
   }
+
+  getPersonalFiltersForFilms(@Payload() findOneDto: FindOneDocumentValidator) {
+    return this.reviewService.getPersonalFiltersForFilms(findOneDto.id);
+  }
 }

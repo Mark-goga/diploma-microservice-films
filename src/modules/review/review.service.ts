@@ -9,6 +9,10 @@ import {
   UpdateReviewDto,
 } from '@modules/review/dto';
 import { User } from '@proto/user/user';
+import { RpcException } from '@nestjs/microservices';
+import { status } from '@grpc/grpc-js';
+import { ERROR_MESSAGES } from '@common/constants';
+import { AllowedFilmFilterFields } from '@modules/films/enums';
 
 @Injectable()
 export class ReviewService {
@@ -71,6 +75,85 @@ export class ReviewService {
     const reviewsWithFilms = await this.reviewRepository.findByUserId(userId);
     return {
       reviews: reviewsWithFilms,
+    };
+  }
+
+  async getPersonalFiltersForFilms(userId: string) {
+    const reviewsWithFilms = await this.reviewRepository.findByUserId(userId);
+
+    if (!reviewsWithFilms.length) {
+      throw new RpcException({
+        code: status.NOT_FOUND,
+        message: ERROR_MESSAGES.USER_DONT_HAVE_REVIEWS,
+      });
+    }
+    const sumRatings = reviewsWithFilms.reduce((acc, review) => {
+      return (acc += review.rating);
+    }, 0);
+    const averageRating = sumRatings / reviewsWithFilms.length;
+
+    const sortedReviewsByRating = reviewsWithFilms
+      .sort((a, b) => {
+        return b.rating - a.rating;
+      })
+      .slice(0, 5);
+
+    const topReviewsByRating = sortedReviewsByRating.reduce((acc, review) => {
+      if (review.rating >= averageRating) {
+        acc.push(review);
+      }
+      return acc;
+    }, []);
+
+    const genresCount: Record<string, number> = {};
+    const directorsCount: Record<string, number> = {};
+
+    topReviewsByRating.forEach((review) => {
+      if (review.film) {
+        review.film.genre.forEach((genre) => {
+          genresCount[genre] = (genresCount[genre] || 0) + review.rating;
+        });
+
+        directorsCount[review.film.director] =
+          (directorsCount[review.film.director] || 0) + review.rating;
+      }
+    });
+
+    const sortedGenres = Object.entries(genresCount)
+      .sort(([, countA], [, countB]) => countB - countA)
+      .slice(0, 3)
+      .map(([genre]) => genre);
+
+    const sortedDirectors = Object.entries(directorsCount)
+      .sort(([, countA], [, countB]) => countB - countA)
+      .slice(0, 3)
+      .map(([director]) => director);
+
+    const filters = [
+      ...(sortedGenres.length
+        ? [
+            {
+              field: AllowedFilmFilterFields.GENRE,
+              value: sortedGenres.join(','),
+            },
+          ]
+        : []),
+      ...(sortedDirectors.length
+        ? [
+            {
+              field: AllowedFilmFilterFields.DIRECTOR,
+              value: sortedDirectors.join(','),
+            },
+          ]
+        : []),
+      {
+        field: AllowedFilmFilterFields.REVIEWS,
+        value: userId,
+      },
+    ];
+
+    return {
+      filters,
     };
   }
 }

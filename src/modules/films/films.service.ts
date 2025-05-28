@@ -3,9 +3,11 @@ import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
 import { FilmsRepository } from './films.repository';
 import { GetFilmsDto } from './dto/get-films.dto';
-import { FilterUtil, PaginationUtil, SortForPrismaUtil } from '@lib/src';
+import { PaginationUtil, SortForPrismaUtil } from '@lib/src';
 import { Prisma } from '@prisma/client';
 import { FILTER_CONFIG_FOR_FILM } from '@modules/films/constants/films-filter.constants';
+import { FilterFilmUtils } from '@modules/films/utils/filter-film.utils';
+import { AllowedFilmFilterFields } from '@modules/films/enums';
 
 @Injectable()
 export class FilmsService {
@@ -20,7 +22,7 @@ export class FilmsService {
       ...options.pagination,
     });
 
-    const where = FilterUtil.buildPrismaWhere<Prisma.FilmsWhereInput>(
+    const where = FilterFilmUtils.buildFilmPrismaWhere<Prisma.FilmsWhereInput>(
       options.filters,
       FILTER_CONFIG_FOR_FILM,
     );
@@ -35,11 +37,26 @@ export class FilmsService {
       this.filmsRepository.count(where),
     ]);
 
+    const authorsField = options.filters?.find(
+      (f) => f.field === AllowedFilmFilterFields.DIRECTOR,
+    );
+    const authorsFilter = authorsField ? authorsField.value : [];
+
+    if (authorsFilter.length) {
+      films.sort((a, b) => {
+        const aDirectorMatch = authorsFilter.includes(a.director) ? 0 : 1;
+        const bDirectorMatch = authorsFilter.includes(b.director) ? 0 : 1;
+
+        return aDirectorMatch - bDirectorMatch;
+      });
+    }
+
     const paginationMeta = PaginationUtil.getMeta(
       options.pagination.page,
       pagination.limit,
       totalCount,
     );
+
     return {
       films,
       pagination: { ...paginationMeta },
