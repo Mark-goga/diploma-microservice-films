@@ -9,7 +9,10 @@ const main = async () => {
     await seedFilms();
   }
 
-  await seedReviews();
+  const reviewCount = await prisma.reviews.count();
+  if (reviewCount === 0) {
+    await seedReviews();
+  }
 };
 
 main()

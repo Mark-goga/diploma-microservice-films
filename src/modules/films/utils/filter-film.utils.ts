@@ -6,6 +6,9 @@ export class FilterFilmUtils {
     filters?: Array<FilterDto>,
     config?: FilterConfig,
   ) {
+    if (!filters || filters.length === 0) {
+      return {};
+    }
     const genreFilter = filters.find((filter) => filter.field === 'genre');
     const directorFilter = filters.find(
       (filter) => filter.field === 'director',

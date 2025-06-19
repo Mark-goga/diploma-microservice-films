@@ -37,18 +37,20 @@ export class FilmsService {
       this.filmsRepository.count(where),
     ]);
 
-    const authorsField = options.filters?.find(
-      (f) => f.field === AllowedFilmFilterFields.DIRECTOR,
-    );
-    const authorsFilter = authorsField ? authorsField.value : [];
+    if (options.filters?.length) {
+      const authorsField = options.filters?.find(
+        (f) => f.field === AllowedFilmFilterFields.DIRECTOR,
+      );
+      const authorsFilter = authorsField ? authorsField.value : [];
 
-    if (authorsFilter.length) {
-      films.sort((a, b) => {
-        const aDirectorMatch = authorsFilter.includes(a.director) ? 0 : 1;
-        const bDirectorMatch = authorsFilter.includes(b.director) ? 0 : 1;
+      if (authorsFilter.length) {
+        films.sort((a, b) => {
+          const aDirectorMatch = authorsFilter.includes(a.director) ? 0 : 1;
+          const bDirectorMatch = authorsFilter.includes(b.director) ? 0 : 1;
 
-        return aDirectorMatch - bDirectorMatch;
-      });
+          return aDirectorMatch - bDirectorMatch;
+        });
+      }
     }
 
     const paginationMeta = PaginationUtil.getMeta(
